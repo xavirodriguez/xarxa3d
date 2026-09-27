@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, OrbitControls } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import type { RenderModel, RenderRouteLeg } from '../render-model/render-model'
@@ -9,6 +9,7 @@ import { LabelProjector, type LabelAnchor } from './label-projector'
 import { LinesLayer, PlatformsLayer, StationMarkers, StationShafts } from './network-layers'
 import { scenePalette } from './palette'
 import { RouteOverlay } from './route-overlay'
+import { TerrainLayer } from './terrain-layer'
 import { VehiclesLayer } from './vehicles-layer'
 
 export interface NetworkSceneProps {
@@ -77,18 +78,7 @@ export default function NetworkScene({
         <directionalLight position={[20, 40, 15]} intensity={1.4} />
         <hemisphereLight args={[scenePalette.paper, scenePalette.ground, 0.4]} />
 
-        <Grid
-          args={[80, 80]}
-          cellSize={1}
-          cellThickness={0.5}
-          cellColor={scenePalette.gridMinor}
-          sectionSize={10}
-          sectionThickness={1}
-          sectionColor={scenePalette.gridMajor}
-          fadeDistance={110}
-          fadeStrength={1.5}
-          infiniteGrid
-        />
+        <TerrainLayer />
 
         <LinesLayer model={model} dimmed={hasRoute} />
         <StationShafts model={model} dimmed={hasRoute} />
@@ -122,6 +112,9 @@ export default function NetworkScene({
             {s.name}
           </span>
         ))}
+        <div className="absolute bottom-2 right-3 rounded bg-card/80 px-1.5 py-0.5 text-[10px] text-muted-foreground backdrop-blur-sm border border-border/50">
+          © ICGC (CC BY 4.0)
+        </div>
       </div>
     </div>
   )

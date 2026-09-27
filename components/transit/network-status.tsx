@@ -35,6 +35,9 @@ export function NetworkStatus({ service }: { service: TransitService }) {
           </li>
         ))}
       </ul>
+      <p className="text-[10px] text-muted-foreground pt-1">
+        Mapa y relieve: © Institut Cartogràfic i Geològic de Catalunya (CC BY 4.0)
+      </p>
     </section>
   )
 }
