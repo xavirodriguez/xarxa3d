@@ -45,16 +45,32 @@ const LAYERS = {
 // --- 1. Bbox real a partir de las estaciones del dominio (nunca a partir de todo Catalunya) ---
 
 function readNetworkBounds() {
-  const src = readFileSync(join(ROOT, 'core/infrastructure/data/barcelona.ts'), 'utf8')
-  const re = /lat:\s*(-?\d+(?:\.\d+)?),\s*lon:\s*(-?\d+(?:\.\d+)?)/g
+  const fileCandidates = [
+    join(ROOT, 'core/infrastructure/data/barcelona-generated.ts'),
+    join(ROOT, 'core/infrastructure/data/barcelona.ts'),
+  ]
+
   const lats = []
   const lons = []
-  let m
-  while ((m = re.exec(src))) {
-    lats.push(Number.parseFloat(m[1]))
-    lons.push(Number.parseFloat(m[2]))
+
+  for (const filePath of fileCandidates) {
+    if (existsSync(filePath)) {
+      const src = readFileSync(filePath, 'utf8')
+      const re = /"lat":\s*(-?\d+(?:\.\d+)?),\s*"lon":\s*(-?\d+(?:\.\d+)?)|lat:\s*(-?\d+(?:\.\d+)?),\s*lon:\s*(-?\d+(?:\.\d+)?)/g
+      let m
+      while ((m = re.exec(src))) {
+        const lat = m[1] ?? m[3]
+        const lon = m[2] ?? m[4]
+        if (lat && lon) {
+          lats.push(Number.parseFloat(lat))
+          lons.push(Number.parseFloat(lon))
+        }
+      }
+      if (lats.length > 0) break
+    }
   }
-  if (lats.length === 0) throw new Error('No se encontraron estaciones en barcelona.ts')
+
+  if (lats.length === 0) throw new Error('No se encontraron estaciones en los archivos de datos de la red')
   return {
     minLat: Math.min(...lats),
     maxLat: Math.max(...lats),
