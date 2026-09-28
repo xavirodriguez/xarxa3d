@@ -39,8 +39,20 @@ export function TransitExplorer() {
   const controller = useMemo(() => new SimulationController(app.simulation), [app])
 
   const renderModel = useMemo(() => {
+    let sumLat = 0
+    let sumLon = 0
+    const count = service.network.stations.length
+    for (const s of service.network.stations) {
+      sumLat += s.location.latitude
+      sumLon += s.location.longitude
+    }
+    const origin =
+      count > 0
+        ? { latitude: sumLat / count, longitude: sumLon / count }
+        : { latitude: 41.395, longitude: 2.165 }
+
     const projection = createLocalProjection({
-      origin: { latitude: 41.395, longitude: 2.165 },
+      origin,
       metersPerUnit: 100,
       verticalExaggeration: 12,
     })

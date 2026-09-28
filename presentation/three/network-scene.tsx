@@ -42,13 +42,40 @@ export default function NetworkScene({
   const origin = stationById.get(originStationId)?.surface ?? null
   const destination = stationById.get(destinationStationId)?.surface ?? null
 
-  // Frame the network in the area not covered by the side panel (desktop) or bottom sheet (mobile).
+  // Frame the network dynamically derived from station bounding box.
   const framing = useMemo(() => {
+    if (model.stations.length === 0) {
+      return { camera: [0, 100, 100] as const, target: [0, 0, 0] as const, maxDistance: 250 }
+    }
+    let minX = Infinity, maxX = -Infinity
+    let minZ = Infinity, maxZ = -Infinity
+    for (const s of model.stations) {
+      if (s.surface[0] < minX) minX = s.surface[0]
+      if (s.surface[0] > maxX) maxX = s.surface[0]
+      if (s.surface[2] < minZ) minZ = s.surface[2]
+      if (s.surface[2] > maxZ) maxZ = s.surface[2]
+    }
+
+    const centerX = (minX + maxX) / 2
+    const centerZ = (minZ + maxZ) / 2
+    const width = maxX - minX
+    const depth = maxZ - minZ
+    const size = Math.max(width, depth, 50)
+
     const wide = typeof window !== 'undefined' && window.innerWidth >= 768
-    return wide
-      ? { camera: [-3, 56, 68] as const, target: [-12, -1, 3] as const }
-      : { camera: [0, 125, 105] as const, target: [0, -1, 24] as const }
-  }, [])
+
+    const target: readonly [number, number, number] = wide
+      ? [centerX - width * 0.1, -1, centerZ]
+      : [centerX, -1, centerZ + depth * 0.1]
+
+    const camera: readonly [number, number, number] = wide
+      ? [centerX, size * 0.85, centerZ + size * 0.85]
+      : [centerX, size * 1.3, centerZ + size * 1.1]
+
+    const maxDistance = Math.max(250, size * 2.5)
+
+    return { camera, target, maxDistance }
+  }, [model])
 
   const labelled = model.stations.filter(
     (s) =>
@@ -72,7 +99,7 @@ export default function NetworkScene({
     <div className="relative h-full w-full pointer-events-none">
       <Canvas
         className="pointer-events-auto"
-        camera={{ position: [...framing.camera], fov: 38, near: 0.1, far: 500 }}
+        camera={{ position: [...framing.camera], fov: 38, near: 0.1, far: 1000 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         onPointerMissed={() => onSelectStation(null)}
@@ -97,7 +124,7 @@ export default function NetworkScene({
           enableDamping
           maxPolarAngle={Math.PI * 0.62}
           minDistance={8}
-          maxDistance={140}
+          maxDistance={framing.maxDistance}
         />
       </Canvas>
 

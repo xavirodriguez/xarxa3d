@@ -56,8 +56,6 @@ export default function MapICGCScene({
         const mapInstance = new Map({
           container: containerRef.current!,
           style: styleUrl,
-          center: [2.1715, 41.3935], // Barcelona
-          zoom: 12,
           maxZoom: 19,
           hash: false,
           pitch: 30,
@@ -67,6 +65,31 @@ export default function MapICGCScene({
 
         mapInstance.on('load', () => {
           if (isCancelled) return
+
+          // Fit bounds to cover all stations in the network
+          if (network.stations.length > 0) {
+            let minLon = Infinity
+            let minLat = Infinity
+            let maxLon = -Infinity
+            let maxLat = -Infinity
+            for (const s of network.stations) {
+              if (s.location.longitude < minLon) minLon = s.location.longitude
+              if (s.location.longitude > maxLon) maxLon = s.location.longitude
+              if (s.location.latitude < minLat) minLat = s.location.latitude
+              if (s.location.latitude > maxLat) maxLat = s.location.latitude
+            }
+            try {
+              mapInstance.fitBounds(
+                [
+                  [minLon, minLat],
+                  [maxLon, maxLat],
+                ],
+                { padding: 60, animate: false },
+              )
+            } catch (e) {
+              console.warn('Could not fit map bounds:', e)
+            }
+          }
 
           // Add 3D terrain
           try {
@@ -238,12 +261,14 @@ export default function MapICGCScene({
         id: 'transit-stations-label',
         type: 'symbol',
         source: 'transit-stations',
+        minzoom: 13,
         layout: {
           'text-field': ['get', 'name'],
           'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
           'text-size': 11,
           'text-offset': [0, 1.2],
           'text-anchor': 'top',
+          'text-allow-overlap': false,
         },
         paint: {
           'text-color': '#111827',
