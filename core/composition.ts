@@ -1,6 +1,6 @@
 import { createTransitService, type TransitService } from './application/transit-service'
 import { createSimulationModel, type SimulationModel } from './domain/simulation/simulation'
-import { barcelonaCompact } from './infrastructure/data/barcelona'
+import { barcelonaCompact } from './infrastructure/data/barcelona-generated'
 import { graphologyGraphFactory } from './infrastructure/graphology/graphology-routing-graph'
 import { importCompactNetwork } from './infrastructure/import/compact-importer'
 
