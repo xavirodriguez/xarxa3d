@@ -40,7 +40,7 @@ export function TransitExplorer() {
 
   const renderModel = useMemo(() => {
     const projection = createLocalProjection({
-      origin: { latitude: 41.3935, longitude: 2.1715 },
+      origin: { latitude: 41.395, longitude: 2.165 },
       metersPerUnit: 100,
       verticalExaggeration: 12,
     })
