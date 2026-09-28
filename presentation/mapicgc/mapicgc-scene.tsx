@@ -302,7 +302,7 @@ export default function MapICGCScene({
 
       {/* Style selector overlay */}
       {icgcConfig?.Styles && (
-        <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-1 rounded-lg border border-border bg-card/90 p-1.5 shadow-md backdrop-blur-sm">
+        <div className="absolute top-3 left-3 md:left-[25rem] z-10 flex flex-wrap gap-1 rounded-lg border border-border bg-card/90 p-1.5 shadow-md backdrop-blur-sm">
           {Object.keys(icgcConfig.Styles)
             .filter((key) => typeof icgcConfig.Styles[key] === 'string')
             .map((styleKey) => (

@@ -21,6 +21,7 @@ export interface NetworkSceneProps {
   destinationStationId: string
   selectedStationId: string | null
   onSelectStation: (stationId: string | null) => void
+  showTerrain?: boolean
 }
 
 export default function NetworkScene({
@@ -32,6 +33,7 @@ export default function NetworkScene({
   destinationStationId,
   selectedStationId,
   onSelectStation,
+  showTerrain = false,
 }: NetworkSceneProps) {
   const labelElements = useRef(new Map<string, HTMLElement>())
   const hasRoute = routeLegs.length > 0
@@ -67,8 +69,9 @@ export default function NetworkScene({
   }))
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full pointer-events-none">
       <Canvas
+        className="pointer-events-auto"
         camera={{ position: [...framing.camera], fov: 38, near: 0.1, far: 500 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
@@ -78,7 +81,7 @@ export default function NetworkScene({
         <directionalLight position={[20, 40, 15]} intensity={1.4} />
         <hemisphereLight args={[scenePalette.paper, scenePalette.ground, 0.4]} />
 
-        <TerrainLayer />
+        {showTerrain && <TerrainLayer />}
 
         <LinesLayer model={model} dimmed={hasRoute} />
         <StationShafts model={model} dimmed={hasRoute} />

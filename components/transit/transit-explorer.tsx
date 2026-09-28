@@ -52,7 +52,6 @@ export function TransitExplorer() {
     [service],
   )
 
-  const [viewMode, setViewMode] = useState<'3d' | 'mapicgc'>('3d')
   const [origin, setOrigin] = useState('sants-estacio')
   const [destination, setDestination] = useState('poblenou')
   const [policy, setPolicy] = useState<CostPolicyId>('fastest')
@@ -78,67 +77,39 @@ export function TransitExplorer() {
     <main className="relative h-dvh w-full overflow-hidden bg-background">
       <h1 className="sr-only">Xarxa 3D: red de transporte multimodal de Barcelona</h1>
 
-      <div className="absolute inset-0">
-        {viewMode === '3d' ? (
-          <NetworkScene
-            model={renderModel}
-            controller={controller}
-            routeLegs={routeLegs}
-            routeStationIds={routeStationIds}
-            originStationId={origin}
-            destinationStationId={destination}
-            selectedStationId={selectedStation}
-            onSelectStation={setSelectedStation}
-          />
-        ) : (
-          <MapICGCScene
-            model={renderModel}
-            network={service.network}
-            routeLegs={routeLegs}
-            routeStationIds={routeStationIds}
-            originStationId={origin}
-            destinationStationId={destination}
-            selectedStationId={selectedStation}
-            onSelectStation={setSelectedStation}
-          />
-        )}
+      <div className="absolute inset-0 z-0">
+        <MapICGCScene
+          model={renderModel}
+          network={service.network}
+          routeLegs={routeLegs}
+          routeStationIds={routeStationIds}
+          originStationId={origin}
+          destinationStationId={destination}
+          selectedStationId={selectedStation}
+          onSelectStation={setSelectedStation}
+        />
       </div>
 
-      <aside className="absolute inset-x-2 bottom-2 flex max-h-[52dvh] flex-col overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-xl md:inset-x-auto md:bottom-4 md:left-4 md:top-4 md:max-h-none md:w-96">
-        <header className="flex items-center justify-between border-b border-border px-5 py-4">
-          <div className="flex items-center gap-3">
-            <span aria-hidden="true" className="size-4 rotate-45 rounded-[2px] bg-primary" />
-            <div>
-              <p className="text-sm font-semibold leading-tight">Xarxa 3D</p>
-              <p className="text-xs leading-tight text-muted-foreground">{service.network.name}</p>
-            </div>
-          </div>
+      <div className="pointer-events-none absolute inset-0 z-10">
+        <NetworkScene
+          model={renderModel}
+          controller={controller}
+          routeLegs={routeLegs}
+          routeStationIds={routeStationIds}
+          originStationId={origin}
+          destinationStationId={destination}
+          selectedStationId={selectedStation}
+          onSelectStation={setSelectedStation}
+          showTerrain={false}
+        />
+      </div>
 
-          <div role="group" aria-label="Vista del mapa" className="flex rounded-md bg-secondary p-0.5">
-            <button
-              type="button"
-              aria-pressed={viewMode === '3d'}
-              onClick={() => setViewMode('3d')}
-              className={`rounded-sm px-2 py-1 text-xs font-medium transition-colors ${
-                viewMode === '3d'
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Escena 3D
-            </button>
-            <button
-              type="button"
-              aria-pressed={viewMode === 'mapicgc'}
-              onClick={() => setViewMode('mapicgc')}
-              className={`rounded-sm px-2 py-1 text-xs font-medium transition-colors ${
-                viewMode === 'mapicgc'
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Mapa ICGC
-            </button>
+      <aside className="absolute inset-x-2 bottom-2 z-20 flex max-h-[52dvh] flex-col overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-xl md:inset-x-auto md:bottom-4 md:left-4 md:top-4 md:max-h-none md:w-96">
+        <header className="flex items-center gap-3 border-b border-border px-5 py-4">
+          <span aria-hidden="true" className="size-4 rotate-45 rounded-[2px] bg-primary" />
+          <div>
+            <p className="text-sm font-semibold leading-tight">Xarxa 3D</p>
+            <p className="text-xs leading-tight text-muted-foreground">{service.network.name}</p>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5">
