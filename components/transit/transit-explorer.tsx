@@ -24,6 +24,15 @@ const NetworkScene = dynamic(() => import('@/presentation/three/network-scene'),
   ),
 })
 
+const MapICGCScene = dynamic(() => import('@/presentation/mapicgc/mapicgc-scene'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
+      Cargando Mapa ICGC GL JS…
+    </div>
+  ),
+})
+
 export function TransitExplorer() {
   const app = useMemo(() => createTransitApp(), [])
   const { service } = app
@@ -68,10 +77,10 @@ export function TransitExplorer() {
     <main className="relative h-dvh w-full overflow-hidden bg-background">
       <h1 className="sr-only">Xarxa 3D: red de transporte multimodal de Barcelona</h1>
 
-      <div className="absolute inset-0">
-        <NetworkScene
+      <div className="absolute inset-0 z-0">
+        <MapICGCScene
           model={renderModel}
-          controller={controller}
+          network={service.network}
           routeLegs={routeLegs}
           routeStationIds={routeStationIds}
           originStationId={origin}
@@ -81,7 +90,21 @@ export function TransitExplorer() {
         />
       </div>
 
-      <aside className="absolute inset-x-2 bottom-2 flex max-h-[52dvh] flex-col overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-xl md:inset-x-auto md:bottom-4 md:left-4 md:top-4 md:max-h-none md:w-96">
+      <div className="pointer-events-none absolute inset-0 z-10">
+        <NetworkScene
+          model={renderModel}
+          controller={controller}
+          routeLegs={routeLegs}
+          routeStationIds={routeStationIds}
+          originStationId={origin}
+          destinationStationId={destination}
+          selectedStationId={selectedStation}
+          onSelectStation={setSelectedStation}
+          showTerrain={false}
+        />
+      </div>
+
+      <aside className="absolute inset-x-2 bottom-2 z-20 flex max-h-[52dvh] flex-col overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-xl md:inset-x-auto md:bottom-4 md:left-4 md:top-4 md:max-h-none md:w-96">
         <header className="flex items-center gap-3 border-b border-border px-5 py-4">
           <span aria-hidden="true" className="size-4 rotate-45 rounded-[2px] bg-primary" />
           <div>
