@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import { createTransitApp } from '@/core/composition'
 import type { CostPolicyId } from '@/core/domain/routing/cost-policy'
 import type { PathFinderId } from '@/core/domain/routing/path-finder'
-import { createLocalProjection } from '@/presentation/render-model/projection'
+import { createWebMercatorProjection } from '@/presentation/render-model/projection'
 import { buildRenderModel, buildRouteOverlay } from '@/presentation/render-model/render-model'
 import { SimulationController } from '@/presentation/simulation/simulation-controller'
 import { scenePalette } from '@/presentation/three/palette'
@@ -15,20 +15,11 @@ import { RoutePlanner } from './route-planner'
 import { SimulationBar } from './simulation-bar'
 import { StationInspector } from './station-inspector'
 
-const NetworkScene = dynamic(() => import('@/presentation/three/network-scene'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
-      Compilando escena 3D…
-    </div>
-  ),
-})
-
 const MapICGCScene = dynamic(() => import('@/presentation/mapicgc/mapicgc-scene'), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
-      Cargando Mapa ICGC GL JS…
+      Cargando Mapa ICGC GL JS y escena 3D…
     </div>
   ),
 })
@@ -51,10 +42,9 @@ export function TransitExplorer() {
         ? { latitude: sumLat / count, longitude: sumLon / count }
         : { latitude: 41.395, longitude: 2.165 }
 
-    const projection = createLocalProjection({
+    const projection = createWebMercatorProjection({
       origin,
-      metersPerUnit: 100,
-      verticalExaggeration: 12,
+      verticalExaggeration: 2,
     })
     return buildRenderModel(service.network, service.index, projection)
   }, [service])
@@ -99,20 +89,7 @@ export function TransitExplorer() {
           destinationStationId={destination}
           selectedStationId={selectedStation}
           onSelectStation={setSelectedStation}
-        />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 z-10">
-        <NetworkScene
-          model={renderModel}
           controller={controller}
-          routeLegs={routeLegs}
-          routeStationIds={routeStationIds}
-          originStationId={origin}
-          destinationStationId={destination}
-          selectedStationId={selectedStation}
-          onSelectStation={setSelectedStation}
-          showTerrain={false}
         />
       </div>
 
@@ -150,7 +127,7 @@ export function TransitExplorer() {
         </div>
       </aside>
 
-      <div className="absolute inset-x-2 top-2 flex flex-col items-end gap-3 md:inset-x-auto md:right-4 md:top-4 md:w-80">
+      <div className="absolute inset-x-2 top-2 flex flex-col items-end gap-3 md:inset-x-auto md:right-4 md:top-4 md:w-80 z-20">
         <SimulationBar controller={controller} />
         {selectedStation && (
           <div className="w-full">

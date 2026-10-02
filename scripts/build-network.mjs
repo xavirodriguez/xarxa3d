@@ -256,7 +256,7 @@ linesArray.sort((a, b) => a.id.localeCompare(b.id, 'en', { numeric: true }))
 const compactNetwork = {
   id: 'bcn-generated',
   name: 'Barcelona · Red real completa',
-  defaultTransfer: { seconds: 180, meters: 120, accessibility: 'partial' },
+  defaultTransfer: { seconds: 180, meters: 120, accessibility: 'escalator' },
   stations: stationsArray,
   lines: linesArray,
   transfers: [],

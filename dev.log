@@ -1,0 +1,15 @@
+$ next dev
+▲ Next.js 16.3.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 613ms
+✓ Running next.config.mjs took 27ms
+
+○ Compiling / ...
+ HEAD / 200 in 10.2s (next.js: 9.7s, application-code: 492ms)
+ GET / 200 in 115ms (next.js: 13ms, application-code: 102ms)
+[browser] Image "circle_grey_2" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a "sprite" property in your style. (<anonymous>)
+[browser] Image "-" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a "sprite" property in your style. (<anonymous>)
+ GET / 200 in 111ms (next.js: 9ms, application-code: 102ms)
+[browser] Image "circle_grey_2" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a "sprite" property in your style. (<anonymous>)
+[browser] Image "-" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a "sprite" property in your style. (<anonymous>)
