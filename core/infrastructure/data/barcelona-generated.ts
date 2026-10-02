@@ -10,7 +10,7 @@ export const barcelonaCompact: CompactNetwork = {
   "defaultTransfer": {
     "seconds": 180,
     "meters": 120,
-    "accessibility": "partial"
+    "accessibility": "escalator"
   },
   "stations": [
     {
